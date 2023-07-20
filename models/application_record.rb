@@ -14,11 +14,15 @@ class ApplicationRecord
     self::SCHEMA.keys.join(", ")
   end
 
+  def self.table_name
+    name.downcase.pluralize
+  end
+
   # This creates a table in the database for the model.
   # It uses the sqlize_schema method to generate the schema.
   def self.create_table
     Database.execute <<-SQL
-      CREATE TABLE IF NOT EXISTS #{name.downcase.pluralize} (
+      CREATE TABLE IF NOT EXISTS #{table_name} (
         id INTEGER PRIMARY KEY AUTOINCREMENT, -- Always have an id
         #{sqlize_schema}
       );
@@ -36,14 +40,14 @@ class ApplicationRecord
     columns = attributes.keys.join(", ")
     values = attributes.values.map { |value| "'#{value}'" }.join(", ")
     Database.execute <<-SQL
-      INSERT INTO #{name.downcase.pluralize} (#{columns})
+      INSERT INTO #{table_name} (#{columns})
       VALUES (#{values});
     SQL
   end
 
   # This method is used to list all records in the database.
   def self.list
-    Database.execute("SELECT * FROM #{name.downcase.pluralize}") do |row|
+    Database.execute("SELECT * FROM #{table_name}") do |row|
       p row
     end
   end
@@ -57,7 +61,7 @@ class ApplicationRecord
   # If no record is found, it will raise an error.
   def self.find(id)
     record = Database
-      .execute("SELECT #{column_names} FROM #{name.downcase.pluralize} WHERE id = #{id}")
+      .execute("SELECT #{column_names} FROM #{table_name} WHERE id = #{id}")
       .first
     raise "Couldn't find #{name} with id #{id}" if record.nil?
 
@@ -74,7 +78,7 @@ class ApplicationRecord
   # UPDATE players SET score = 100 WHERE id = 1;
   def update(column, value)
     Database.execute <<-SQL
-      UPDATE #{self.class.name.downcase.pluralize}
+      UPDATE #{table_name}
       SET #{column} = '#{value}'
       WHERE id = #{id};
     SQL
