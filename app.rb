@@ -11,8 +11,7 @@ get '/frank-says' do
 end
 
 post '/' do 
-  Player.create(params["name"], params["email"])
-  binding.pry
+  Player.create(params)
 end 
 
 get '/cookies_test' do 

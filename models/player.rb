@@ -1,16 +1,22 @@
 class Player < ApplicationRecord
 
-  SCHEMA = {id: :integer, name: :varchar, email: :varchar, score: :integer}
+  SCHEMA = {
+    name:  :varchar,
+    email: :varchar,
+    score: :integer
+  }
 
   create_table
 
   attr_accessor :name, :id
 
-  def initialize(id, name)
-
+  def initialize(id, data)
     @id = id
-    @name = name
-
+    @name = data[:name]
+    @email = data[:email]
+    @score = data[:score]
   end 
 
 end
+
+binding.pry
