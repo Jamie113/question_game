@@ -18,5 +18,3 @@ class Player < ApplicationRecord
   end 
 
 end
-
-binding.pry
